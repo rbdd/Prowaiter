@@ -1,0 +1,33 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #e5e5e5;
+}
+
+#users {
+    width: 50%;
+}
+
+#users input {
+    width: 99%;
+}
+
+ul {
+    height: 500px;
+    background-color: white;
+    overflow-y: scroll;
+}
+
+li {
+    list-style: none;
+}
+
+#landing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+}
