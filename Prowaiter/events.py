@@ -15,16 +15,6 @@ def handle_user_join(username):
     users[username] = request.sid
     emit_user_list_update()
 
-
-@socketio.on("new_message")
-def handle_new_message(message):
-    print(f"New message: {message}")
-    username = None 
-    for user in users:
-        if users[user] == request.sid:
-            username = user
-    emit("chat", {"message": message, "username": username}, broadcast=True)
-
 @socketio.on("remove_user")
 def remove_user(username):
     if username in users:
