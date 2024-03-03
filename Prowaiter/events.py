@@ -19,7 +19,7 @@ def handle_user_join(username):
 def remove_user(username):
     if username in users:
         users.pop(username)
-        emit('user_removed', username, broadcast=True)
+        emit_user_list_update()
 
 def emit_user_list_update():
     user_list = list(users.keys())

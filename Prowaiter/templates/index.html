@@ -15,11 +15,11 @@
     </div>
 
     <ul id="users" style="display: none">
-        <li>lll</li>
     </ul>
     <script>
         const socket = io({autoConnect: false});
 
+        //Handling User Join
         document.getElementById("join-btn").addEventListener("click", function() {
             let username = document.getElementById("username").value;
 
@@ -35,6 +35,8 @@
             document.getElementById("users").style.display = "block";
             document.getElementById("landing").style.display = "none";
         });
+        // end of user join
+
 
         socket.on("user_list_update", function(userList) {
             console.log("Received updated user list:", userList);
@@ -42,7 +44,16 @@
             ul.innerHTML = "";
             userList.forEach(function(username) {
                 let li = document.createElement("li");
-                li.appendChild(document.createTextNode(username));
+                let button = document.createElement("button");
+                li.appendChild(document.createTextNode(username + " "));
+                button.appendChild(document.createTextNode("❌"));
+
+                //Handling user deletion
+                button.addEventListener("click", function(){
+                    socket.emit("remove_user", username);
+                })
+
+                li.appendChild(button);
                 ul.appendChild(li);
             });
         });
