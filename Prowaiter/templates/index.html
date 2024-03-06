@@ -14,6 +14,10 @@
         <button id="join-btn">JOIN</button>
     </div>
 
+    <div id="message-box" style="display: block;">
+        <p id="message"></p>
+    </div>
+
     <ul id="users" style="display: none">
     </ul>
     <script>
@@ -52,11 +56,31 @@
                 button.addEventListener("click", function(){
                     socket.emit("remove_user", username);
                 })
+                //end of user deletion 
 
                 li.appendChild(button);
                 ul.appendChild(li);
             });
+
+            
         });
+        socket.on("update_position", function(position) {
+            updateMessageBox(position);
+        });
+
+        function updateMessageBox(position) {
+            console.log("updateMessage function is triggered.")
+            let messageBox = document.getElementById("message-box");
+            let message = document.getElementById("message");
+
+            if (position === 1) {
+                message.textContent = "You are next in line!\nPlease wait at the counter.";
+            } else if(position === 2){
+                message.textContent = "You are in 2nd place of the queue!"
+            } else {
+                message.textContent = "There are " + (position - 1) + " people infront of you.";
+            }
+        }
     </script>
 
 </body>

@@ -25,4 +25,6 @@ def emit_user_list_update():
     user_list = list(users.keys())
     print(user_list)
     emit("user_list_update", user_list, broadcast=True)
+    for position, username in enumerate(user_list, start=1):
+        emit("update_position", position, room=users[username])
     
