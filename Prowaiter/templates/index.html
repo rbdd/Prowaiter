@@ -41,33 +41,36 @@
         });
         // end of user join
 
-
-        socket.on("user_list_update", function(userList) {
-            console.log("Received updated user list:", userList);
+        //Updates the userlist
+        socket.on("user_list_update", function(data) {
+            console.log("Received updated user list:", data.users);
             let ul = document.getElementById("users");
             ul.innerHTML = "";
-            userList.forEach(function(username) {
+            data.users.forEach(function(username) {
                 let li = document.createElement("li");
-                let button = document.createElement("button");
                 li.appendChild(document.createTextNode(username + " "));
-                button.appendChild(document.createTextNode("❌"));
 
-                //Handling user deletion
-                button.addEventListener("click", function(){
-                    socket.emit("remove_user", username);
-                })
-                //end of user deletion 
-
-                li.appendChild(button);
+                if (data.isAdmin){
+                    let button = document.createElement("button");
+                    button.appendChild(document.createTextNode("❌"));
+                    //Handling user deletion
+                    button.addEventListener("click", function(){
+                        socket.emit("remove_user", username);
+                        })
+                    //end of user deletion 
+                    li.appendChild(button);
+                }
                 ul.appendChild(li);
             });
-
-            
         });
+        //Userlist update ends
+
+
         socket.on("update_position", function(position) {
             updateMessageBox(position);
         });
 
+        // Updates the queue status message for each customer
         function updateMessageBox(position) {
             console.log("updateMessage function is triggered.")
             let messageBox = document.getElementById("message-box");
@@ -81,6 +84,7 @@
                 message.textContent = "There are " + (position - 1) + " people infront of you.";
             }
         }
+        // end of updateMessagebox
     </script>
 
 </body>
