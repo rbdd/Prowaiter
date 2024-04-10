@@ -14,14 +14,15 @@
         <button id="join-btn">JOIN</button>
     </div>
 
-    <div id="message-box" style="display: block;">
+    <div id="message_box" style="display: none">
         <p id="message"></p>
+        <ul id="users">
+        </ul>
     </div>
-
-    <ul id="users" style="display: none">
-    </ul>
     <script>
         const socket = io({autoConnect: false});
+
+        var ring = new Audio("{{ url_for('static', filename='sound/Ding-sound-effect.mp3') }}")
 
         //Handling User Join
         document.getElementById("join-btn").addEventListener("click", function() {
@@ -36,7 +37,7 @@
                 socket.emit("user_join", username);
             });
 
-            document.getElementById("users").style.display = "block";
+            document.getElementById("message_box").style.display = "block";
             document.getElementById("landing").style.display = "none";
         });
         // end of user join
@@ -51,25 +52,43 @@
                 li.appendChild(document.createTextNode(username + " "));
 
                 if (data.isAdmin){
-                    let button = document.createElement("button");
-                    button.appendChild(document.createTextNode("❌"));
+                    let button_delete = document.createElement("button");
+                    let button_notify = document.createElement("button");
+                    button_delete.appendChild(document.createTextNode("❌"));
+                    button_notify.appendChild(document.createTextNode("🔔"));
                     //Handling user deletion
-                    button.addEventListener("click", function(){
+                    button_delete.addEventListener("click", function(){
                         socket.emit("remove_user", username);
                         })
+                    li.appendChild(button_delete);
                     //end of user deletion 
-                    li.appendChild(button);
+                    //Handling user notification
+                    button_notify.addEventListener("click", function(){
+                        socket.emit("notify_user", username);
+                        })
+                    li.appendChild(button_notify);
+                    console.log("admin things");
+                    //end of notification
                 }
                 ul.appendChild(li);
             });
         });
         //Userlist update ends
 
-
         socket.on("update_position", function(position) {
             updateMessageBox(position);
         });
 
+
+        socket.on("ring", function(){
+            ring.play();
+            if ("vibrate" in navigator) {
+                navigator.vibrate(15000);
+            } else {
+                console.log("Vibration API not supported");
+            }
+        })
+        
         // Updates the queue status message for each customer
         function updateMessageBox(position) {
             console.log("updateMessage function is triggered.")

@@ -26,6 +26,11 @@ def remove_user(username):
         users.pop(username)
         emit_user_list_update()
 
+@socketio.on("notify_user")
+def get_user_sid(username):
+    if username in users:
+        emit("ring", room=users[username])
+    
 def emit_user_list_update():
     user_list = list(users.keys())
 

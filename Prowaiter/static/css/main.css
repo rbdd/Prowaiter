@@ -1,33 +1,78 @@
+/* Apply a global reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Set up basic styles for the body */
 body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8; /* Light gray background */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #e5e5e5;
 }
 
-#users {
-    width: 50%;
-}
-
-#users input {
-    width: 99%;
-}
-
-ul {
-    height: 500px;
-    background-color: white;
-    overflow-y: scroll;
-}
-
-li {
-    list-style: none;
-}
-
-#landing {
+/* Container for user list */
+#message_box, #landing {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 10px;
+}
+
+#message_box {
+    display: none; /* Hide by default */
+}
+
+#message{
+    margin-bottom: 5%;
+}
+
+#landing {
+    gap: 10px; /* Spacing between elements */
+}
+
+/* Input field for username */
+#username {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+/* Style the user list */
+#users {
+    list-style: none;
+    padding: 0;
+    background-color: whitesmoke;
+    height: 400px; 
+    overflow-y: auto; /* Enable vertical scroll if needed */
+    border: 1px solid black;
+}
+
+/* Style each user item */
+#users li {
+    padding: 10px;
+    border-bottom: 1px solid grey; /* Light gray border bottom */
+
+}
+
+/* Button styles */
+button {
+    padding: 10px 20px;
+    background-color: white; /* Blue button */
+    border: none;
+    color: black; /* White text */
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+button:hover {
+    background-color: whitesmoke; /* Darker blue on hover */
 }
