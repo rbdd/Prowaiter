@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, session
 from flask_socketio import emit
 
 from .extensions import socketio
@@ -13,11 +13,12 @@ def handle_connect():
 @socketio.on("user_join")
 def handle_user_join(username):
     global admin_sid
-    if (username == "admin" and not admin_sid):
+    if username == "admin" and not admin_sid:
         admin_sid = request.sid
     else:
         print(f"User {username} joined!")
         users[username] = request.sid
+        session['username'] = username
     emit_user_list_update()
 
 @socketio.on("remove_user")
@@ -41,4 +42,3 @@ def emit_user_list_update():
 
     for position, username in enumerate(user_list, start=1):
         emit("update_position", position, room=users[username])
-    
