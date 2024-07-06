@@ -12,6 +12,7 @@
     <div id="landing">
         <input type="text" id="username" placeholder="Username">
         <button id="join-btn">JOIN</button>
+        <p id="error-message" style="color: red; display: none;"></p>
     </div>
 
     <div id="message_box" style="display: none">
@@ -30,7 +31,11 @@
                 document.getElementById("message_box").style.display = "block";
                 document.getElementById("landing").style.display = "none";
                 socket.connect();
-                socket.emit("user_join", username);
+                if (sessionStorage.getItem('admin')) {
+                    socket.emit("reconnect", "admin"); // Reconnect as admin if sessionStorage indicates admin
+                } else {
+                    socket.emit("reconnect", username); // Reconnect as regular user
+                }
             }
         });
 
@@ -39,8 +44,6 @@
 
             console.log("Joining with username:", username);
 
-            sessionStorage.setItem('username', username);
-
             socket.connect();
 
             socket.on("connect", function() {
@@ -48,16 +51,18 @@
                 socket.emit("user_join", username);
             });
 
-            document.getElementById("message_box").style.display = "block";
-            document.getElementById("landing").style.display = "none";
+            socket.on("username_assigned", function(data) {
+                sessionStorage.setItem('username', data.username);
+                document.getElementById("message_box").style.display = "block";
+                document.getElementById("landing").style.display = "none";
+            });
         });
 
-        //logout of user
         document.getElementById("leave-btn").addEventListener("click", function() {
             const username = sessionStorage.getItem('username');
             socket.emit("remove_user", username);
             sessionStorage.removeItem('username');
-            
+
             fetch('/logout', { method: 'POST' })
                 .then(response => response.json())
                 .then(data => {
@@ -67,8 +72,6 @@
                 });
         });
 
-
-        // Updates the user list
         socket.on("user_list_update", function(data) {
             console.log("Received updated user list:", data.users);
             let ul = document.getElementById("users");
@@ -83,13 +86,11 @@
                     button_delete.appendChild(document.createTextNode("❌"));
                     button_notify.appendChild(document.createTextNode("🔔"));
 
-                    // Handling user deletion
                     button_delete.addEventListener("click", function() {
                         socket.emit("remove_user", username);
                     });
                     li.appendChild(button_delete);
 
-                    // Handling user notification
                     button_notify.addEventListener("click", function() {
                         socket.emit("notify_user", username);
                     });
@@ -113,7 +114,6 @@
             }
         });
 
-        // Updates the queue status message for each customer
         function updateMessageBox(position) {
             console.log("updateMessage function is triggered.");
             let message = document.getElementById("message");
